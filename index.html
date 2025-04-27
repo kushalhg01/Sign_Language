@@ -235,25 +235,25 @@ button:hover {
   }
 }
 
-
-    function downloadImage() {
+function downloadImage() {
   const signContainer = document.getElementById('signGroup');
 
-  if (signContainer.children.length === 0) {
+  if (!signContainer.children.length) {
     alert('⚠️ Nothing to download. Please type a name first!');
     return;
   }
 
   html2canvas(signContainer, {
-    backgroundColor: '#ffffff', // Make background white for clean look
-    scale: 2, // Make it higher quality
-  }).then(function(canvas) {
+    backgroundColor: '#ffffff',
+    scale: 2,
+  }).then(canvas => {
     const link = document.createElement('a');
     link.download = 'my-sign-name.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
   });
 }
+
 
   </script>
 
