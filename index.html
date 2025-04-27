@@ -243,6 +243,15 @@ function downloadImage() {
     return;
   }
 
+  // Step 1: Temporarily reset styles
+  const letters = signContainer.querySelectorAll('.sign-letter');
+  letters.forEach(letter => {
+    letter.style.opacity = '1';
+    letter.style.transform = 'none';
+    letter.style.filter = 'none';
+  });
+
+  // Step 2: Capture
   html2canvas(signContainer, {
     backgroundColor: '#ffffff',
     scale: 2,
@@ -251,8 +260,11 @@ function downloadImage() {
     link.download = 'my-sign-name.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
+
+    // Step 3: (Optional) Restore styles back if needed
   });
 }
+
 
 
   </script>
