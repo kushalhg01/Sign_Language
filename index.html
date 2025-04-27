@@ -183,12 +183,13 @@ button:hover {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
-    const letterImages = {};
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+   const letterImages = {};
+   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     letters.split('').forEach(letter => {
-      letterImages[letter] = `images/${letter.toLowerCase()}.png`;
+    letterImages[letter] = `images/${letter}.png`; // No toLowerCase
     });
+
 
     // Real-time validation (only alphabets)
     document.getElementById('nameInput').addEventListener('input', function (e) {
