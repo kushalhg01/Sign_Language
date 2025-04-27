@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Name in Sign Language</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 12px;
+      font-size: 18px;
+      width: 280px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    input:focus {
+      border-color: #54ad24;
+      box-shadow: 0 0 8px rgba(84, 173, 36, 0.5);
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 8px;
+      background-color: #54ad24;
+      color: white;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #3b7f1b;
+    }
+    #output {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    h1 {
+  font-size: 3.5em;
+  margin-bottom: 20px;
+  padding: 20px 1000px;
+  background-color: #000000; /* Black background */
+  color: #10c3eb; /* White text */
+  border-radius: 5px;
+  display: inline-block;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+
+
+
+    #signGroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* ✅ Allow wrapping */
+  gap: 10px;
+  max-width: 1600px; /* ✅ Limit width to force wrapping after ~15 letters */
+}
+
+#signGroup {
+  margin: 0 auto;
+}
+
+
+    .sign-letter {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin: 5px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .sign-letter:hover {
+      transform: scale(1.1);
+      transition: transform 0.3s;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+    }
+    #customMessage {
+      font-size: 24px;
+      color: #54ad24;
+      margin-top: 10px;
+    }
+    #hoveredLetter {
+      font-size: 28px;
+      color: #333;
+      margin-top: 20px;
+      height: 40px;
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Your Name in Sign Language</h1>
+
+  <h2>
+    Type in your name to see it spelled out in ASL!
+  </h2>
+  
+  <div class="input-group">
+    <input type="text" id="nameInput" placeholder="Enter your name">
+    <button onclick="generateSignName()">Show</button>
+  </div>
+  
+  <button onclick="downloadImage()">Download</button>
+
+  <div id="output">
+    <div id="signGroup"></div>
+    <div id="customMessage"></div>
+    <div id="hoveredLetter"></div> <!-- Hover text -->
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    const letterImages = {};
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    letters.split('').forEach(letter => {
+      letterImages[letter] = `images/${letter.toLowerCase()}.png`;
+    });
+
+    // Real-time validation (only alphabets)
+    document.getElementById('nameInput').addEventListener('input', function (e) {
+      const cleanValue = e.target.value.replace(/[^a-zA-Z]/g, '');
+      if (e.target.value !== cleanValue) {
+        alert('⚠️ Please enter only alphabets.');
+        e.target.value = cleanValue;
+      }
+    });
+
+    function generateSignName() {
+      const name = document.getElementById('nameInput').value.trim();
+      const signContainer = document.getElementById('signGroup');
+      const message = document.getElementById('customMessage');
+      const hoveredLetter = document.getElementById('hoveredLetter');
+      signContainer.innerHTML = '';
+      message.textContent = '';
+      hoveredLetter.textContent = '';
+
+      if (name === '') {
+        alert('⚠️ Please enter a name.');
+        return;
+      }
+
+      name.toUpperCase().split('').forEach((letter, index) => {
+        if (letterImages[letter]) {
+          const img = document.createElement('img');
+          img.src = letterImages[letter];
+          img.alt = letter;
+          img.className = 'sign-letter';
+          img.style.animationDelay = `${index * 0.1}s`;
+
+          // Hover functionality
+          img.addEventListener('mouseover', () => {
+            hoveredLetter.textContent = `You are hovering: ${letter}`;
+          });
+          img.addEventListener('mouseout', () => {
+            hoveredLetter.textContent = '';
+          });
+
+          signContainer.appendChild(img);
+        }
+      });
+
+      if (name !== '') {
+        message.textContent = "Your name in ASL! 🤟";
+      }
+    }
+
+    function downloadImage() {
+  const signContainer = document.getElementById('signGroup');
+
+  if (signContainer.children.length === 0) {
+    alert('⚠️ Nothing to download. Please type a name first!');
+    return;
+  }
+
+  html2canvas(signContainer, {
+    backgroundColor: '#ffffff', // Make background white for clean look
+    scale: 2, // Make it higher quality
+  }).then(function(canvas) {
+    const link = document.createElement('a');
+    link.download = 'my-sign-name.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+  </script>
+
+</body>
+</html>
