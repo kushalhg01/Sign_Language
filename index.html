@@ -200,43 +200,40 @@ button:hover {
     });
 
     function generateSignName() {
-      const name = document.getElementById('nameInput').value.trim();
-      const signContainer = document.getElementById('signGroup');
-      const message = document.getElementById('customMessage');
-      const hoveredLetter = document.getElementById('hoveredLetter');
-      signContainer.innerHTML = '';
-      message.textContent = '';
-      hoveredLetter.textContent = '';
+  const name = document.getElementById('nameInput').value.trim();
+  const signContainer = document.getElementById('signGroup');
+  const message = document.getElementById('customMessage');
+  signContainer.innerHTML = '';
+  message.textContent = '';
 
-      if (name === '') {
-        alert('⚠️ Please enter a name.');
-        return;
-      }
+  // Validate: only alphabets allowed
+  if (!/^[a-zA-Z]+$/.test(name)) {
+    alert('⚠️ Please enter only alphabets.');
+    return;
+  }
 
-      name.toUpperCase().split('').forEach((letter, index) => {
-        if (letterImages[letter]) {
-          const img = document.createElement('img');
-          img.src = letterImages[letter];
-          img.alt = letter;
-          img.className = 'sign-letter';
-          img.style.animationDelay = `${index * 0.1}s`;
-
-          // Hover functionality
-          img.addEventListener('mouseover', () => {
-            hoveredLetter.textContent = `You are hovering: ${letter}`;
-          });
-          img.addEventListener('mouseout', () => {
-            hoveredLetter.textContent = '';
-          });
-
-          signContainer.appendChild(img);
-        }
-      });
-
-      if (name !== '') {
-        message.textContent = "Your name in ASL! 🤟";
-      }
+  name.toUpperCase().split('').forEach((letter, index) => {
+    if (letterImages[letter]) {
+      const img = document.createElement('img');
+      img.src = letterImages[letter]; // Important: images/A.png, images/B.png
+      img.alt = letter;
+      img.className = 'sign-letter';
+      img.style.animationDelay = `${index * 0.1}s`;
+      img.onmouseover = () => {
+        document.getElementById('hoveredLetter').textContent = `Letter: ${letter}`;
+      };
+      img.onmouseleave = () => {
+        document.getElementById('hoveredLetter').textContent = '';
+      };
+      signContainer.appendChild(img);
     }
+  });
+
+  if (name !== '') {
+    message.textContent = "Your name in ASL! 🤟";
+  }
+}
+
 
     function downloadImage() {
   const signContainer = document.getElementById('signGroup');
